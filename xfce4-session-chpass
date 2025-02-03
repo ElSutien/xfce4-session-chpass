@@ -1,0 +1,19 @@
+#!/bin/bash
+
+sleep 1
+
+#Ask for password change
+flag=1
+while [ $flag -eq 1 ]; do
+  bash /usr/bin/change-pass
+  [ $? -eq 0 ] && flag=0 || zenity --warning --text "You CAN NOT skip this process."
+done
+
+#Restore startx session to the normal one
+echo "xfce4-session" >"$HOME/.xsession"
+
+#Start xsession
+xfce4-session
+
+wait
+exit

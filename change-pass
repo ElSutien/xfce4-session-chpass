@@ -1,0 +1,28 @@
+#!/bin/bash
+  
+curpass="$(zenity --title "PASSWORD change" --width=350 --forms --text "Actual password" --add-password=Password)"
+[ $? -ne 0 ] && exit 1
+  
+newpass1="$(zenity --title "PASSWORD change" --width=350 --forms --text "New password" --add-password=Password)"
+[ $? -ne 0 ] && exit 1
+  
+newpass2="$(zenity --title "PASSWORD change" --width=350 --forms --text "Retype new password" --add-password=Password)"
+[ $? -ne 0 ] && exit 1
+  
+if [ "$newpass1" != "$newpass2" ]; then
+  zenity --error --text "Passwords do not match."
+  exit 2
+fi
+  
+outtxt=$(printf "${curpass}\n${newpass1}\n${newpass2}\n" | passwd 2>&1)
+res=$?
+  
+if [ $res -ne 0 ]; then
+  msg="$(echo "$outtxt" | head -n1 | sed 's/: /\n/g' | tail -n1)"
+  zenity --error --text "$msg"
+  exit 3
+else
+  zenity --info --text "Password updated!"
+fi
+
+exit 0
